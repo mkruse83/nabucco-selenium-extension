@@ -16,165 +16,93 @@
 
 // This code serves as base for our plugin. It originated from the
 // StoredVars-Plugin 'http://blog.reallysimplethoughts.com/'
+NabuccoExtView = (function() {
 
-StoredVarsView = (function() {
-//	SBDialogs = {};
-//	SBDialogs.confirm = function(message, title) {
-//		return Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-//				.getService(Components.interfaces.nsIPromptService).confirm(
-//						null, title, message);
-//	};
-//
-	function StoredVarsView(editor) {
+	function NabuccoExtView(editor) {
 		this.editor = editor;
-//		this.showDefaults = false;
-//		this.view = document.getElementById("storedVarsView");
-//		this.varsElement = this.view.contentDocument.getElementById("vars");
-//		this.msgElement = this.view.contentDocument.getElementById("msg");
-//		this.splashElement = this.view.contentDocument.getElementById("splash");
-//		this.view.contentDocument.getElementById("bloglink").addEventListener(
-//				"click", function() {
-//					openTabOrWindow('http://blog.reallysimplethoughts.com/');
-//				}, false);
+		editor.app.addObserver({
+			baseURLChanged : function() {
+				alert("baseURL");
+			},
+
+			optionsChanged : function() {
+				alert("optionsChanged");
+
+			},
+
+			testSuiteChanged : function(testSuite) {
+				alert("testSuiteChanged");
+			},
+
+			testSuiteUnloaded : function(testSuite) {
+				alert("testSuiteUnloaded");
+			},
+
+			testCaseChanged : function(testCase) {
+				alert("testCaseChanged");
+			},
+
+			testCaseUnloaded : function(testCase) {
+				alert("testCaseUnloaded");
+			},
+
+			/**
+			 * called when the format is changing. It synchronizes the testcase
+			 * before changing the view with a converted testcase in the new
+			 * format
+			 */
+			currentFormatChanging : function() {
+				alert("currentFormatChanging");
+			},
+
+			currentFormatChanged : function(format) {
+				alert("currentFormatChanged");
+			},
+
+			/**
+			 * called when the format can't be changed. It advises the user of
+			 * the undoable action
+			 */
+			currentFormatUnChanged : function(format) {
+				alert("currentFormatUnChanged");
+			},
+
+			clipboardFormatChanged : function(format) {
+			},
+
+			_testCaseObserver : {
+				modifiedStateUpdated : function() {
+					alert("_testCaseObserver");
+				}
+			},
+
+			_testSuiteObserver : {
+				testCaseAdded : function() {
+					alert("_testSuiteObserver");
+				}
+			}
+		});
 	}
-//
-//	var NO_STORED_VARS_MSG = "Stored variables will be available once you play a test case or execute a command. Click the Refresh button to refresh.";
-//	var ONLY_DEFAULT_STORED_VARS_MSG = "No stored variables have been created by the test case. If you want to view the default stored variables (nbsp and space), click the 'Show default variables' from the Stored variables menu. Click the Refresh button to refresh.";
-//	var OLD_STORED_VARS_MSG = "Selenium IDE keeps the old stored variables and they will also be shown. Click the Refresh button to refresh.";
-//
-//	StoredVarsView.prototype.show = function() {
-//		this.view.hidden = false;
-//		document.getElementById("storedVarsButtons").hidden = false;
-//		document.getElementById("storedVarsTab").setAttribute("selected",
-//				"true");
-//		this.update();
-//		document.getElementById("fbarStoredVars").open(0);
-//	};
-//
-//	StoredVarsView.prototype.hide = function() {
-//		document.getElementById("fbarStoredVars").close();
-//		document.getElementById("storedVarsTab").removeAttribute("selected");
-//		this.view.hidden = true;
-//		document.getElementById("storedVarsButtons").hidden = true;
-//	};
-//
-//	StoredVarsView.prototype.toggleDefaultVars = function(evt, toolButton) {
-//		if (evt.target.id && evt.target.id == "storedVarsShowDefaultVars") {
-//			this.showDefaults = !this.showDefaults;
-//			toolButton.checked = this.showDefaults;
-//			this.update();
-//		}
-//	};
-//
-//	StoredVarsView.prototype.update = function() {
-//		var showDefaults = this.showDefaults;
-//		var numVars = 0;
-//		this.clear();
-//		if (this.editor.selDebugger) {
-//			if (this.editor.selDebugger.runner) {
-//				if (this.editor.selDebugger.runner.storedVars) {
-//					for ( var key in this.editor.selDebugger.runner.storedVars) {
-//						if (showDefaults || (key != "nbsp" && key != "space")) {
-//							this
-//									.insertItem(
-//											key,
-//											this.editor.selDebugger.runner.storedVars[key],
-//											numVars % 2,
-//											(key != "nbsp" && key != "space"));
-//							numVars++;
-//						}
-//					}
-//					if (numVars == 0) {
-//						this.showMessage(ONLY_DEFAULT_STORED_VARS_MSG);
-//					} else if (!(showDefaults && numVars == 2)) {
-//						this.showMessage(OLD_STORED_VARS_MSG);
-//					}
-//					this.splashElement.className = 'no-msg';
-//				} else {
-//					this.showMessage(NO_STORED_VARS_MSG);
-//				}
-//			} else {
-//				this.showMessage(NO_STORED_VARS_MSG);
-//			}
-//		} else {
-//			this.showMessage(NO_STORED_VARS_MSG);
-//		}
-//		return true;
-//	};
-//
-//	StoredVarsView.prototype.insertItem = function(itemName, itemValue,
-//			applyOddClass, isUserVar) {
-//		var li = this.view.contentDocument.createElement('li');
-//		if (applyOddClass) {
-//			li.className = "odd";
-//		}
-//		if (isUserVar) {
-//			var checkBox = this.view.contentDocument.createElement('input');
-//			checkBox.type = "checkbox";
-//			checkBox.name = "vars-check";
-//			checkBox.value = itemName;
-//			li.appendChild(checkBox);
-//		}
-//		li.appendChild(this.view.contentDocument.createTextNode(" " + itemName
-//				+ (itemValue ? ' = "' + itemValue + '"' : '')));
-//		this.varsElement.appendChild(li);
-//	};
-//
-//	StoredVarsView.prototype.removeAllVars = function() {
-//		if (this.editor.selDebugger) {
-//			if (this.editor.selDebugger.runner) {
-//				if (this.editor.selDebugger.runner.storedVars) {
-//					if (SBDialogs.confirm("Remove all stored variables?",
-//							"Stored Variables")) {
-//						for ( var key in this.editor.selDebugger.runner.storedVars) {
-//							if (key != "nbsp" && key != "space") {
-//								// TODO: add support for undo
-//								delete this.editor.selDebugger.runner.storedVars[key];
-//							}
-//						}
-//						this.update();
-//					}
-//				}
-//			}
-//		}
-//	};
-//
-//	StoredVarsView.prototype.removeSelectedVars = function() {
-//		var checkBoxes = this.view.contentDocument
-//				.getElementsByName('vars-check');
-//		for ( var i = 0; i < checkBoxes.length; i++) {
-//			var c = checkBoxes[i];
-//			if (c.checked) {
-//				// TODO: add support for undo
-//				// No need to check for default vars as they don't get check
-//				// boxes
-//				delete this.editor.selDebugger.runner.storedVars[c.value];
-//			}
-//		}
-//		this.update();
-//	};
-//
-//	StoredVarsView.prototype.showMessage = function(message) {
-//		this.msgElement.innerHTML = message;
-//		this.msgElement.className = 'msg';
-//	};
-//
-//	StoredVarsView.prototype.clear = function() {
-//		this.varsElement.innerHTML = '';
-//		this.msgElement.innerHTML = '';
-//		this.msgElement.className = 'no-msg';
-//	};
-//
-	StoredVarsView.prototype.myAlert = function() {
+
+	NabuccoExtView.prototype.myAlert = function() {
 		alert("test");
+
+		var message = "";
+		for ( var i = 0; i < editor.app.testCase.commands.length; i++) {
+			var cmd = editor.app.testCase.commands[i];
+			message = message + "cmd: " + cmd.command + " target: "
+					+ cmd.target + " value: " + cmd.value + "\n";
+		}
+		alert(message);
+
 	};
 
-	return StoredVarsView;
+	return NabuccoExtView;
 })();
 
 // Init the extension
 try {
-	this.editor.storedVarsView = new StoredVarsView(this.editor);
+	this.editor.nabuccoExtView = new NabuccoExtView(this.editor);
 } catch (error) {
-	alert('Error in StoredVarsViewer: ' + error);
+	alert('Error while initializing NabuccoExtViewer: ' + error);
 }

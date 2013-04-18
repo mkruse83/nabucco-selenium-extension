@@ -24,7 +24,7 @@
     	mytabbox.firstChild.appendChild(mytab);
     	var mypanel = document.createElementNS(xulns, "tabpanel");
     	var mytext = document.createElementNS(xulns, "textbox");
-    	mytext.setAttribute("oninput", "window.editor.storedVarsView.myAlert()");
+    	mytext.setAttribute("oninput", "window.editor.nabuccoExtView.myAlert()");
     	mypanel.appendChild(mytext);
     	mytabbox.lastChild.appendChild(mypanel); 
   	</script>
