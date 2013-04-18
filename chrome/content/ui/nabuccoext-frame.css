@@ -1,0 +1,41 @@
+body {
+  font-family: Verdana, Tahoma, sans-serif;
+}
+
+#storedvars-console ol {
+  margin-top: 0px;
+  list-style-position: outside;
+}
+
+#storedvars-console ol li {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  white-space: pre-wrap;
+}
+
+#storedvars-console ol li.odd {
+  background-color: #e0e0e0;
+}
+
+.no-msg {
+  display: none;
+}
+
+.msg {
+  background: none repeat scroll 0 0 #ffffcc;
+  border: 1px solid #d0d0d0;
+  display: block;
+  padding: 2px;
+  font-size: 75%;
+  margin-bottom: 4px;
+}
+
+.splash {
+  background: none repeat scroll 0 0 #ffffcc;
+  border: 1px solid #d0d0d0;
+  display: block;
+  padding: 2px;
+  font-size: 75%;
+  margin-bottom: 4px;
+}
+

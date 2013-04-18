@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<overlay id="nabuccoextviewer_extension_loader_overlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <script type="application/x-javascript" src="chrome://selenium-ide/content/api.js"/>
+    <script type="application/x-javascript" src="chrome://nabuccoextviewer/content/setup/pluginframework.js"/>
+    <script type="application/x-javascript" src="chrome://nabuccoextviewer/content/setup/setup.js"/>
+</overlay>

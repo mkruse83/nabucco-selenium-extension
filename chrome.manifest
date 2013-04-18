@@ -1,0 +1,6 @@
+content nabuccoextviewer chrome/content/
+locale nabuccoextviewer en-US chrome/locale/en-US/
+skin nabuccoextviewer classic/1.0 chrome/skin/
+
+overlay chrome://selenium-ide/content/selenium-ide-overlay.xul chrome://nabuccoextviewer/content/setup/setup.xul
+overlay chrome://selenium-ide/content/selenium-ide.xul chrome://nabuccoextviewer/content/ui/ovIDE.xul
