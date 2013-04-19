@@ -1,3 +1,8 @@
+var SEPARATORS = {
+  comma: ",",
+  tab: "\t"
+};
+
 /**
  * Parse source and update TestCase. Throw an exception if any error occurs.
  *
@@ -5,7 +10,49 @@
  * @param source The source to parse
  */
 function parse(testCase, source) {
-	//TODO: impl.
+
+	
+	
+	
+	var doc = source;
+	var commands = [];
+    var sep = SEPARATORS[options['separator']];
+	while (doc.length > 0) {
+		
+		//The exec() method tests for a match in a string.
+		//This method returns the matched text if it finds a match, otherwise it returns null.
+	    //In This case the exec method returns an array with two elements. The elements contain the same content
+		//(line from file which was read.)
+	   var line = /(.*)(\r\n|[\r\n])?/.exec(doc);
+	   var array = line[1].split(sep);
+	   
+	   //alert("doc " + doc);
+	   
+	   var obj = JSON.parse(doc);
+	   
+	    for ( var testCase in obj) {
+			if(obj.hasOwnProperty(test)){
+				
+			}
+		}
+	   
+	   
+	   if (array.length >= 3) {
+	      var command = new Command();
+	      command.command = array[0];
+	      command.target = array[1];
+	      command.value = array[2];
+	      
+	      
+	      
+	      commands.push(command);
+	   }
+	   
+	   //Returns the rest up to line[0].length
+	   doc = doc.substr(line[0].length);
+	}
+	testCase.setCommands(commands);
+
 }
 
 /**
@@ -82,4 +129,15 @@ function formatCommands(name, commands) {
   testSuite[name] = testCase;
 
   return JSON.stringify(testSuite);
-}			
+}
+
+options = {separator: 'comma'};
+
+configForm =
+    '<description>Separator</description>' +
+	'<menulist id="options_separator">' +
+	'<menupopup>' +
+	'<menuitem label="Comma" value="comma"/>' +
+	'<menuitem label="Tab" value="tab"/>' +
+	'</menupopup>' +
+	'</menulist>';
