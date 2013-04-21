@@ -16,34 +16,50 @@
 
 // This code serves as base for our plugin. It originated from the
 // StoredVars-Plugin 'http://blog.reallysimplethoughts.com/'
+
+/**
+ * This is the class where all logic of the nabucco-extension should
+ * be handled. It has access to the tree-view and the selenium editor.
+ */
 NabuccoExtView = (function() {
 
 	function NabuccoExtView(editor) {
 		this.editor = editor;
+		this.tree = document.getElementById("nbcCommands");
+		this.view = new NabuccoExtTreeView(this, this.tree);
+		var self = this; // needed to have access to "this" within the Object
+							// that is added in "addObserver" below
+
+		// adding an observer to the editor. the object implements some methods
+		// that are called from the editor when e.g. the testcase has changed.
+		// enable alerts to learn when these events are fired.
 		editor.app.addObserver({
 			baseURLChanged : function() {
-				alert("baseURL");
+				// alert("baseURL");
 			},
 
 			optionsChanged : function() {
-				alert("optionsChanged");
+				// alert("optionsChanged");
 
 			},
 
 			testSuiteChanged : function(testSuite) {
-				alert("testSuiteChanged");
+				// alert("testSuiteChanged");
 			},
 
 			testSuiteUnloaded : function(testSuite) {
-				alert("testSuiteUnloaded");
+				// alert("testSuiteUnloaded");
 			},
 
 			testCaseChanged : function(testCase) {
-				alert("testCaseChanged");
+				// alert("testCaseChanged");
+				testCase.addObserver(this._testCaseObserver);
+
 			},
 
 			testCaseUnloaded : function(testCase) {
-				alert("testCaseUnloaded");
+				// alert("testCaseUnloaded");
+				testCase.removeObserver(this._testCaseObserver);
 			},
 
 			/**
@@ -52,11 +68,11 @@ NabuccoExtView = (function() {
 			 * format
 			 */
 			currentFormatChanging : function() {
-				alert("currentFormatChanging");
+				// alert("currentFormatChanging");
 			},
 
 			currentFormatChanged : function(format) {
-				alert("currentFormatChanged");
+				// alert("currentFormatChanged");
 			},
 
 			/**
@@ -64,38 +80,75 @@ NabuccoExtView = (function() {
 			 * the undoable action
 			 */
 			currentFormatUnChanged : function(format) {
-				alert("currentFormatUnChanged");
+				// alert("currentFormatUnChanged");
 			},
 
 			clipboardFormatChanged : function(format) {
 			},
 
+			// an observer that is added by the editor itself. 
 			_testCaseObserver : {
 				modifiedStateUpdated : function() {
-					alert("_testCaseObserver");
+					// alert("_testCaseObserver");
+					self.updateView();
 				}
 			},
 
 			_testSuiteObserver : {
 				testCaseAdded : function() {
-					alert("_testSuiteObserver");
+					// alert("_testSuiteObserver");
 				}
 			}
 		});
 	}
 
-	NabuccoExtView.prototype.myAlert = function() {
-		alert("test");
+	/**
+	 * This function should generate a comment that the user
+	 * can adjust later. It should translate the commands
+	 * and add speaking names for the control.
+	 */
+	NabuccoExtView.prototype.generateComment = function(cmd) {
+		cmd.nabcomment = "testcomment";
+		// TODO implementation.
+		// TODO try-catch
+	}
 
-		var message = "";
-		for ( var i = 0; i < editor.app.testCase.commands.length; i++) {
-			var cmd = editor.app.testCase.commands[i];
-			message = message + "cmd: " + cmd.command + " target: "
-					+ cmd.target + " value: " + cmd.value + "\n";
+	/**
+	 * This function should generate a grouping index used on
+	 * import. Maybe some logic can be used to determine when
+	 * the index should be incremented but for now it should
+	 * only take the last group-index and increment it by one.
+	 */
+	NabuccoExtView.prototype.generateGroupIndex = function(cmd) {
+		cmd.nabgroup = 1;
+		// TODO implementation
+		// TODO try catch
+	}
+
+	/**
+	 * This function updates the tree view. It should be called
+	 * whenever the original tree from selenium is changed.
+	 */
+	NabuccoExtView.prototype.updateView = function() {
+		try {
+			this.view.refresh();
+		} catch (error) {
+			alert('Error while refreshing tree: ' + error);
 		}
-		alert(message);
+	}
 
-	};
+//	NabuccoExtView.prototype.myAlert = function() {
+//		alert("test");
+//
+//		var message = "";
+//		for ( var i = 0; i < this.editor.app.testCase.commands.length; i++) {
+//			var cmd = this.editor.app.testCase.commands[i];
+//			message = message + "cmd: " + cmd.command + " target: "
+//					+ cmd.target + " value: " + cmd.value + "\n";
+//		}
+//		alert(message);
+//
+//	};
 
 	return NabuccoExtView;
 })();
