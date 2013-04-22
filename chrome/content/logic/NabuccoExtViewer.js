@@ -120,7 +120,7 @@ NabuccoExtView = (function() {
 	 * only take the last group-index and increment it by one.
 	 */
 	NabuccoExtView.prototype.generateGroupIndex = function(cmd) {
-		cmd.nabgroup = 1;
+		cmd.nabgroup = "";
 		// TODO implementation
 		// TODO try catch
 	}

@@ -179,7 +179,7 @@ objectExtend(
 			// isEditable(long row, nsITreeColumn col)
 			isEditable : function(row, col) {
 				try {
-					if (col.id == "nabcomment")
+					if (col.id == "nabcomment" || col.id == "nabgroup")
 						return true;
 					return false;
 				} catch (error) {
@@ -197,7 +197,7 @@ objectExtend(
 			// setCellText(long row, nsITreeColumn col, AString value)
 			setCellText : function(row, col, value) {
 				try {
-					if (col.id != "nabcomment")
+					if (col.id != "nabcomment" && col.id != "nabgroup")
 						return;
 					var command = this.getCommand(row);
 					command[col.id] = "" + value;
