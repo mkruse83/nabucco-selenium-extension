@@ -32,11 +32,11 @@ function parse(testCase, source) {
 	//node is the Root element
 	var allTestCases = node.childNodes;
 	
-	alert(allTestCases);
+	//alert(allTestCases);
 	
 	for (var i=0; i < allTestCases.length; i++) {
 		
-		alert("allTestCases: " + allTestCases[i].nodeName);
+		//alert("allTestCases: " + allTestCases[i].nodeName);
 		
 		if(allTestCases[i].nodeType == 1 && allTestCases[i].nodeName == 'testcase'){
 			
@@ -65,7 +65,7 @@ function parse(testCase, source) {
 								
 								if(actionAttributes[l].nodeType == 1){
 								
-									alert("Action: " + JSON.stringify(actions[k]) + "Node name: " + actionAttributes[l].nodeName);								
+									//alert("Action: " + JSON.stringify(actions[k]) + "Node name: " + actionAttributes[l].nodeName);								
 									
 									if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'id'){													
 										if(actionAttributes[l].firstChild){
@@ -122,13 +122,13 @@ function parse(testCase, source) {
 					};
 					
 				}else if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == 'name'){
-					alert("testCaseName: " + testSteps[j].firstChild.nodeValue);
+					//alert("testCaseName: " + testSteps[j].firstChild.nodeValue);
 					testCase.name = testSteps[j].firstChild.nodeValue;
 				};
 				
 			};			
 			
-			alert(JSON.stringify(commands));
+			//alert(JSON.stringify(commands));
 		};
 		
 		
@@ -343,9 +343,9 @@ function formatCommands(name, commands, baseURL) {
 };
 
 
-function formatSuite(testSuite, filename) {
+//function formatSuite(testSuite, filename) {
 	
-	alert("This option is not implemented.");
+//	alert("This option is not implemented.");
 //	  formattedSuite = 'require "spec/ruby"\n' +
 //	      'require "spec/runner"\n' +
 //	      '\n' +
@@ -364,4 +364,4 @@ function formatSuite(testSuite, filename) {
 //	    }
 //	  }
 //	  return formattedSuite;
-};
+//};
