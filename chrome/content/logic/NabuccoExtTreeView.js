@@ -52,8 +52,8 @@ objectExtend(
 					this.newCommand = new Command();
 					this.log.debug("refresh: new rowCount=" + this.rowCount);
 				} catch (error) {
-					alert("initialize: " + error);
-					this.log.error("Could not initialize treeview " + error);
+					alert("refresh: " + error);
+					this.log.error("Could not refresh treeview " + error);
 					throw error;
 				}
 			},
@@ -179,7 +179,7 @@ objectExtend(
 			// isEditable(long row, nsITreeColumn col)
 			isEditable : function(row, col) {
 				try {
-					if (col.id == "nabcomment" || col.id == "nabgroup")
+					if (col.id == "nabcomment" || col.id == "nabgroup" || col.id == "nabmetadataname")
 						return true;
 					return false;
 				} catch (error) {
@@ -197,7 +197,7 @@ objectExtend(
 			// setCellText(long row, nsITreeColumn col, AString value)
 			setCellText : function(row, col, value) {
 				try {
-					if (col.id != "nabcomment" && col.id != "nabgroup")
+					if (col.id  != "nabcomment" && col.id != "nabgroup" && col.id != "nabmetadataname")
 						return;
 					var command = this.getCommand(row);
 					command[col.id] = "" + value;

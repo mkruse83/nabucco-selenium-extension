@@ -108,9 +108,26 @@ NabuccoExtView = (function() {
 	 * and add speaking names for the control.
 	 */
 	NabuccoExtView.prototype.generateComment = function(cmd) {
-		cmd.nabcomment = "testcomment";
-		// TODO implementation.
-		// TODO try-catch
+		try {
+			var commandMap = {      
+				//key = selenium-command
+	            //matcher: $site, $value, $field
+	            "open" : "Es wurde die Seite #target geöffnet",
+	            "type" : "Der Wert #value wurde in das Feld #target eingetippt",
+	            "typeKeys" : "Der Wert #value wurde in das Feld #target eingetippt",
+	            "click" : "Es wurde das Feld #target angeklickt",
+	            "clickAndWait" : "Es wurde das Feld #target angeklickt",
+	            "select" : "Es wurde der Wert #value aus der Selectbox #target ausgewählt",
+	        };
+			var command = "";
+			if (cmd.command in commandMap) {
+				command = commandMap[cmd.command];
+			}
+			cmd.nabcomment = command.replace(/#value/, "\"" + cmd.value + "\"").replace(/#target/, "\"" + cmd.target + "\"");
+		} catch (error) {
+			this.log.error("generateComment: " + error);
+			throw error;
+		}
 	}
 
 	/**
@@ -118,6 +135,7 @@ NabuccoExtView = (function() {
 	 * import. Maybe some logic can be used to determine when
 	 * the index should be incremented but for now it should
 	 * only take the last group-index and increment it by one.
+	 * At the moment the group index is empty per default.
 	 */
 	NabuccoExtView.prototype.generateGroupIndex = function(cmd) {
 		cmd.nabgroup = "";
