@@ -45,16 +45,18 @@ NabuccoExtView = (function() {
 
 			testSuiteChanged : function(testSuite) {
 				// alert("testSuiteChanged");
+				testSuite.addObserver(this._testSuiteObserver);
 			},
 
 			testSuiteUnloaded : function(testSuite) {
 				// alert("testSuiteUnloaded");
+				testSuite.removeObserver(this._testSuiteObserver);
 			},
 
 			testCaseChanged : function(testCase) {
 				// alert("testCaseChanged");
+				self.updateView();
 				testCase.addObserver(this._testCaseObserver);
-
 			},
 
 			testCaseUnloaded : function(testCase) {
@@ -97,7 +99,10 @@ NabuccoExtView = (function() {
 			_testSuiteObserver : {
 				testCaseAdded : function() {
 					// alert("_testSuiteObserver");
+					self.updateView();
 				}
+				
+			
 			}
 		});
 	}
