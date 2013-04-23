@@ -1,3 +1,8 @@
+
+/**
+ * Collection with constants for using in functions. 
+ * It's the central position for changing attribute names.
+ */
 var command_constants = {
    'command': 'command',
    'target': 'target',
@@ -7,8 +12,13 @@ var command_constants = {
    'nabmetadataname':'nabmetadataname'
 };
 
+/**
+ * Collection with constants for using in functions to import and export in XML.
+ * Each constant describes a tag in XML document.
+ * It's the central position for changing attribute names.
+ */
 var xml_tags_constants = {
-	'namespace':'http://www.prodyna.com/nabucco_ta/selenium_ide',	
+	'namespace':'http://www.prodyna.com',	
 	'testconfiguration':'testconfiguration',
 	'testcasename':'name',
 	'testcase':'testcase',
@@ -23,6 +33,22 @@ var xml_tags_constants = {
 	'nabmetadataname':'nabmetadataname'		
 };
 
+/**
+ * Checks if a XMLNode has one or more children returns the value of first child, else 'undefined'.
+ * @param node
+ * @returns string object
+ */
+function checkEmptyEntry(node){
+	var result;
+	
+	if(node.firstChild){
+		result = nabgroup = node.firstChild.nodeValue;
+	}else{
+		result = nabgroup = 'undefined';
+	}
+	
+	return result;
+}
 
 /**
  * Parse source and update TestCase. Throw an exception if any error occurs.
@@ -86,53 +112,22 @@ function parse(testCase, source) {
 							var command = new Command();							
 							for(var l = 0; l < actionAttributes.length; l++){
 								
-								if(actionAttributes[l].nodeType == 1){
-								
-									//alert("Action: " + JSON.stringify(actions[k]) + "Node name: " + actionAttributes[l].nodeName);								
-									
-//									if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'id'){													
-//										if(actionAttributes[l].firstChild){
-//											command.id = actionAttributes[l].firstChild.nodeValue;	
-//										}else{
-//											command.id = "";
-//										}
-//										command.nabgroup = nabgroup;
-//									}else 
-										
+								if(actionAttributes[l].nodeType == 1){								
+																			
 									if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['command']){										
-										if(actionAttributes[l].firstChild){
-											command.command = actionAttributes[l].firstChild.nodeValue;
-										}else{
-											command.command = "";
-										}
+										command.command = checkEmptyEntry(actionAttributes[l]);
 										command.nabgroup = nabgroup;
 									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['target']){
-										if(actionAttributes[l].firstChild){
-											command.target = actionAttributes[l].firstChild.nodeValue;	
-										}else{
-											command.target = "";
-										}
+										command.target = checkEmptyEntry(actionAttributes[l]);
 										command.nabgroup = nabgroup;
 									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['value']){
-										if(actionAttributes[l].firstChild){
-											command.value = actionAttributes[l].firstChild.nodeValue;	
-										}else{
-											command.value = "";
-										}
+										command.value = checkEmptyEntry(actionAttributes[l]);	
 										command.nabgroup = nabgroup;
 									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['nabmetadataname']){
-										if(actionAttributes[l].firstChild){
-											command.nabmetadataname = actionAttributes[l].firstChild.nodeValue;	
-										}else{
-											command.nabmetadataname = "";
-										}
+										command.nabmetadataname = checkEmptyEntry(actionAttributes[l]);
 										command.nabgroup = nabgroup;
 									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['nabcomment']){
-										if(actionAttributes[l].firstChild){
-											command.nabcomment = actionAttributes[l].firstChild.nodeValue;	
-										}else{
-											command.nabcomment = "";
-										}
+										command.nabcomment = checkEmptyEntry(actionAttributes[l]);
 										command.nabgroup = nabgroup;
 									};
 								}
@@ -142,20 +137,22 @@ function parse(testCase, source) {
 							testCase.setCommands(commands);							
 							
 						}else if(actions[k].nodeType == 1 && actions[k].nodeName == xml_tags_constants['nabgroupname']){ //Teststep name
-							nabgroup = actions[k].firstChild.nodeValue;
+								nabgroup = checkEmptyEntry(actions[k]);
 						};
 					};
 					
 				}else if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == xml_tags_constants['testcasename']){
-					//alert("testCaseName: " + testSteps[j].firstChild.nodeValue);
-					testCase.name = testSteps[j].firstChild.nodeValue;
+						testCase.name = checkEmptyEntry(testSteps[j]);
+						
 				}else if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == xml_tags_constants['baseurl']){
-					window.editor.app.setBaseURL(testSteps[j].firstChild.nodeValue);
+					if(testSteps[j].firstChild){
+						window.editor.app.setBaseURL(testSteps[j].firstChild.nodeValue);
+					}else{
+						//Nothing: Selenium IDE has an default value of basic URL
+					}
 				}
 				
 			};			
-			
-			//alert(JSON.stringify(commands));
 		};
 		
 		
@@ -315,45 +312,6 @@ function createXMLFromTestSuite(testSuiteObject, namespace){
 	return result;
 };
 
-
-
-///**
-// * Format an array of commands to the snippet of source.
-// * Used to copy the source into the clipboard.
-// * 
-// * @param name of testCase 
-// * @param array of commands.
-// * 
-// * @return JSON format for importing into NABUCCO TA
-// */
-//function formatCommands(name, commands, baseURL) {
-//  
-//  var testSuite = new Object;
-//  var testCase = new Object;  
-//  testCase.baseURL = baseURL;
-//  for (var i = 0; i < commands.length; i++) {
-//    var command = commands[i];
-//    if (command.type == command_constants['command']) {
-//	    if(testCase[command.nabgroup]) {
-//	    	var userActions = testCase[command.nabgroup];
-//	    	var userAction = createUserAction(command);
-//	    	userActions["" + i] = userAction;
-//	    } else {
-//		  	var actions = new Array();
-//		  	var userAction = createUserAction(command);
-//		  	actions.push(userAction);
-//	    	testCase[command.nabgroup] = actions;
-//	    }
-//    }else{
-//    	this.log.info("Format extension XML NABUCCO TA: formatCommands(name, commands) -> command.type != 'command'");
-//    }
-//  };
-//
-//  testSuite[name] = testCase; 
-//  
-//  return createXMLFromTestSuite(testSuite, "http://www.prodyna.com/nabucco_ta/selenium_ide");
-//};
-
 /**
  * Format an array of commands to the snippet of source.
  * Used to copy the source into the clipboard.
@@ -361,7 +319,7 @@ function createXMLFromTestSuite(testSuiteObject, namespace){
  * @param name of testCase 
  * @param array of commands.
  * 
- * @return JSON format for importing into NABUCCO TA
+ * @return XML format for importing into NABUCCO TA
  */
 function formatCommands(name, commands, baseURL) {
   
@@ -390,26 +348,3 @@ function formatCommands(name, commands, baseURL) {
   
   return createXMLFromTestSuite(testSuite, xml_tags_constants['namespace']);
 };
-
-//function formatSuite(testSuite, filename) {
-	
-//	alert("This option is not implemented.");
-//	  formattedSuite = 'require "spec/ruby"\n' +
-//	      'require "spec/runner"\n' +
-//	      '\n' +
-//	      "# output T/F as Green/Red\n" +
-//	      "ENV['RSPEC_COLOR'] = 'true'\n" +
-//	      '\n';
-//
-//	  for (var i = 0; i < testSuite.tests.length; ++i) {
-//	    // have saved or loaded a suite
-//	    if (typeof testSuite.tests[i].filename != 'undefined') {
-//	      formattedSuite += 'require File.join(File.dirname(__FILE__),  "' + testSuite.tests[i].filename.replace(/\.\w+$/, '') + '")\n';
-//	    } else {
-//	      // didn't load / save as a suite
-//	      var testFile = testSuite.tests[i].getTitle();
-//	      formattedSuite += 'require "' + testFile + '"\n';
-//	    }
-//	  }
-//	  return formattedSuite;
-//};

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.prodyna.com" elementFormDefault="qualified"
+	xmlns:ns="http://www.prodyna.com" xmlns:nta="http://www.prodyna.com">
+
+	<xs:annotation>
+		<xs:appinfo>Export from Selenium-IDE to NABUCCO TA</xs:appinfo>
+		<xs:documentation xml:lang = "de">
+			Schema-Datei zur Beschreibung/Validierung von
+			Exportdaten der Selenium-IDE
+		</xs:documentation>
+	</xs:annotation>
+	
+	<!-- Testconfiguration consists only one element "testcase" -->
+	<xs:element name="testconfiguration">		
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="testcase" type="nta:testCaseType" minOccurs="1" maxOccurs="1" ></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+	<xs:complexType name="testCaseType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="baseurl" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="nabgroup" type="nta:nabGroupType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+		<xs:complexType name="nabGroupType">
+			<xs:sequence>
+				<xs:element name = "name" type = "xs:string"/>
+				<xs:element name="action" type="nta:userActionType" minOccurs="1" maxOccurs="unbounded" ></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	<xs:complexType name="userActionType">
+		<xs:all>			
+			<xs:element name="command" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="target" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="nabcomment" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="nabmetadataname" type="xs:string" minOccurs="1" maxOccurs="1" />
+		</xs:all>
+	</xs:complexType>		
+</xs:schema>
