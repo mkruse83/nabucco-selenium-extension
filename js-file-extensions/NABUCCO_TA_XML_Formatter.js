@@ -1,3 +1,29 @@
+var command_constants = {
+   'command': 'command',
+   'target': 'target',
+   'value':'value',
+   'nabcomment':'nabcomment',
+   'nabgroup':'nabgroup',
+   'nabmetadataname':'nabmetadataname'
+};
+
+var xml_tags_constants = {
+	'namespace':'http://www.prodyna.com/nabucco_ta/selenium_ide',	
+	'testconfiguration':'testconfiguration',
+	'testcasename':'name',
+	'testcase':'testcase',
+	'baseurl':'baseurl',
+	'action':'action', 
+	'command': 'command',
+	'target': 'target',
+	'value':'value',
+	'nabcomment':'nabcomment',
+	'nabgroup':'nabgroup',
+	'nabgroupname':'name',
+	'nabmetadataname':'nabmetadataname'		
+};
+
+
 /**
  * Parse source and update TestCase. Throw an exception if any error occurs.
  *
@@ -38,7 +64,7 @@ function parse(testCase, source) {
 		
 		//alert("allTestCases: " + allTestCases[i].nodeName);
 		
-		if(allTestCases[i].nodeType == 1 && allTestCases[i].nodeName == 'testcase'){
+		if(allTestCases[i].nodeType == 1 && allTestCases[i].nodeName == xml_tags_constants['testcase']){
 			
 			var commands = [];
 			
@@ -46,16 +72,13 @@ function parse(testCase, source) {
 			
 			for(var j = 0; j < testSteps.length; j++){
 				
-				if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == 'teststep'){
+				if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == xml_tags_constants['nabgroup']){
 					
-					var testStepName = ''; //The "name" tag must be at the first position in testStep
+					var nabgroup = ''; //The "name" tag must be at the first position in testStep
 					var actions = testSteps[j].childNodes;
-					
-					
-					
 					for(var k = 0; k < actions.length; k++){
 						
-						if(actions[k].nodeType == 1 && actions[k].nodeName == 'action'){
+						if(actions[k].nodeType == 1 && actions[k].nodeName == xml_tags_constants['action']){
 							
 							var actionAttributes = actions[k].childNodes;
 							
@@ -67,48 +90,50 @@ function parse(testCase, source) {
 								
 									//alert("Action: " + JSON.stringify(actions[k]) + "Node name: " + actionAttributes[l].nodeName);								
 									
-									if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'id'){													
-										if(actionAttributes[l].firstChild){
-											command.id = actionAttributes[l].firstChild.nodeValue;	
-										}else{
-											command.id = "";
-										}
-										command.testStepName = testStepName;
-									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'command'){										
+//									if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'id'){													
+//										if(actionAttributes[l].firstChild){
+//											command.id = actionAttributes[l].firstChild.nodeValue;	
+//										}else{
+//											command.id = "";
+//										}
+//										command.nabgroup = nabgroup;
+//									}else 
+										
+									if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['command']){										
 										if(actionAttributes[l].firstChild){
 											command.command = actionAttributes[l].firstChild.nodeValue;
 										}else{
 											command.command = "";
 										}
-										command.testStepName = testStepName;
-									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'target'){
+										command.nabgroup = nabgroup;
+									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['target']){
 										if(actionAttributes[l].firstChild){
 											command.target = actionAttributes[l].firstChild.nodeValue;	
 										}else{
 											command.target = "";
 										}
-										command.testStepName = testStepName;
-									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'value'){
+										command.nabgroup = nabgroup;
+									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['value']){
 										if(actionAttributes[l].firstChild){
 											command.value = actionAttributes[l].firstChild.nodeValue;	
 										}else{
 											command.value = "";
 										}
-										command.testStepName = testStepName;
-									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'metaDataName'){
+										command.nabgroup = nabgroup;
+									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['nabmetadataname']){
 										if(actionAttributes[l].firstChild){
-											command.metaDataName = actionAttributes[l].firstChild.nodeValue;	
+											command.nabmetadataname = actionAttributes[l].firstChild.nodeValue;	
 										}else{
-											command.metaDataName = "";
+											command.nabmetadataname = "";
 										}
-										command.testStepName = testStepName;
-									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == 'comment'){
+										command.nabgroup = nabgroup;
+									}else if(actionAttributes[l].nodeType == 1 && actionAttributes[l].nodeName == xml_tags_constants['nabcomment']){
 										if(actionAttributes[l].firstChild){
-											command.comment = actionAttributes[l].firstChild.nodeValue;	
+											command.nabcomment = actionAttributes[l].firstChild.nodeValue;	
 										}else{
-											command.comment = "";
+											command.nabcomment = "";
 										}
-										command.testStepName = testStepName;
+										command.nabgroup = nabgroup;
 									};
 								}
 							};
@@ -116,15 +141,17 @@ function parse(testCase, source) {
 							commands.push(command);
 							testCase.setCommands(commands);							
 							
-						}else if(actions[k].nodeType == 1 && actions[k].nodeName == 'name'){ //Teststep name
-							testStepName = actions[k].firstChild.nodeValue;
+						}else if(actions[k].nodeType == 1 && actions[k].nodeName == xml_tags_constants['nabgroupname']){ //Teststep name
+							nabgroup = actions[k].firstChild.nodeValue;
 						};
 					};
 					
-				}else if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == 'name'){
+				}else if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == xml_tags_constants['testcasename']){
 					//alert("testCaseName: " + testSteps[j].firstChild.nodeValue);
 					testCase.name = testSteps[j].firstChild.nodeValue;
-				};
+				}else if(testSteps[j].nodeType == 1 && testSteps[j].nodeName == xml_tags_constants['baseurl']){
+					window.editor.app.setBaseURL(testSteps[j].firstChild.nodeValue);
+				}
 				
 			};			
 			
@@ -160,18 +187,6 @@ function defaultString(value){
 	return  value;	
 };
 
-/**
- * Generates (countOfTabs * "\t") (tabs) string object
- * @param countOfTabs
- */
-function generateTabs(countOfTabs){	
-	var result = '';
-	while(countOfTabs > 0){
-		result += "\t";	
-		countOfTabs--;
-	}
-	return result;
-};
 
 /**
  * @param tagName
@@ -185,23 +200,20 @@ function generateTabs(countOfTabs){
  * 
  * @returns {String}
  */
-function wrapIntoXMLTags(tagName, value, flag, tabsCount, namespace){
-	var result = generateTabs(tabsCount);
+function wrapIntoXMLTags(tagName, value, flag, namespace){
+	var result = '';
 	switch(flag){
 		case 0:
-			result += "<" + tagName + ">\n";
+			result += "<" + tagName + ">";
 			break;
 		case 1:
-			result += "<" + tagName + ">" + value + "</" + tagName + ">\n";
+			result += "<" + tagName + ">" + value + "</" + tagName + ">";
 			break;	
 		case 2:
 			result += "</" + tagName + ">";
-			break;
-		case 3:
-			result += "</" + tagName + ">\n";
-			break;
+			break;		
 		case 10:
-			result += "<" + tagName + " xmlns = \"" + namespace +"\">\n";
+			result += "<" + tagName + " xmlns = \"" + namespace +"\">";
 			break;
 		default: break;	
 	}
@@ -211,14 +223,14 @@ function wrapIntoXMLTags(tagName, value, flag, tabsCount, namespace){
 /**
  * Creates new object user action, filled with id and values from command object
  */
-function createUserAction(id, command) {
+function createUserAction(command) {
 	var userAction = new Object;
-	userAction.id = id;
-	userAction.command = command.command;
-	userAction.target = command.target;
-	userAction.value = command.value;
-	userAction.comment = "" + defaultString(command.comment);
-	userAction.metaDataName = "" + defaultString(command.metaDataName);
+	//userAction.id = id;
+	userAction[command_constants['command']] = command[command_constants['command']];
+	userAction[command_constants['target']] = command[command_constants['target']];
+	userAction[command_constants['value']] = command[command_constants['value']];
+	userAction[command_constants['nabcomment']] = "" + defaultString(command[command_constants['nabcomment']]);
+	userAction[command_constants['nabmetadataname']] = "" + defaultString(command[command_constants['nabmetadataname']]);
 	
 	return userAction;
 }; 
@@ -227,10 +239,10 @@ function createXMLFromTestSuite(testSuiteObject, namespace){
 	
 	var result = '';
 	
-	result += "<?xml version = \"1.0\" encoding = \"UTF-8\" ?>\n";
+	result += "<?xml version = \"1.0\" encoding = \"UTF-8\" ?>";
 	
 	//Root element open tag
-	result += wrapIntoXMLTags("testconfiguration", null, 10, 0, namespace);
+	result += wrapIntoXMLTags(xml_tags_constants['testconfiguration'], null, 10, namespace);
 	
 	for ( var testCaseName in testSuiteObject) {
 		
@@ -241,69 +253,106 @@ function createXMLFromTestSuite(testSuiteObject, namespace){
 			var testCaseObject = testSuiteObject[testCaseName];
 			
 			//Opens testCase tag with 1 tab before open tag
-			result += wrapIntoXMLTags("testcase", null, 0, 1, null);
+			result += wrapIntoXMLTags(xml_tags_constants['testcase'], null, 0, null);
 			
 			//Creates <name>NAME</name> XML entry with 2 tabs before open tag
-			result += wrapIntoXMLTags("name", testCaseName, 1, 2, null);
+			result += wrapIntoXMLTags(xml_tags_constants['testcasename'], testCaseName, 1, null);
 			
 			//Creates <baseURL>BASE_URL</baseURL> XML entry with 2 tabs before open tag
-			result += wrapIntoXMLTags("baseURL", testCaseObject.baseURL, 1, 2, null);
+			result += wrapIntoXMLTags(xml_tags_constants['baseurl'], testCaseObject[xml_tags_constants['baseurl']], 1, null);
 			
-			for(var testStepName in testCaseObject){
+			for(var nabgroup in testCaseObject){
 				
 				//Gets the testStep from testCase
-				if(testCaseObject.hasOwnProperty(testStepName) && testStepName != "baseURL"){
+				if(testCaseObject.hasOwnProperty(nabgroup) && nabgroup != xml_tags_constants['baseurl']){
 					
 					//Opens testStep tag with 2 tab before open tag
-					result += wrapIntoXMLTags("teststep", null, 0, 2, null);
+					result += wrapIntoXMLTags(xml_tags_constants['nabgroup'], null, 0, null);
 					
 					//Creates <name>NAME</name> XML entry with 3 tabs before open tag
-					result += wrapIntoXMLTags("name", testStepName, 1, 3, null);
+					result += wrapIntoXMLTags(xml_tags_constants['nabgroupname'], nabgroup, 1, null);
 					
 					//testStepObject is an Array of actions
-					var testStepObject = testCaseObject[testStepName];
+					var testStepObject = testCaseObject[nabgroup];
 					for (var i = 0; i < testStepObject.length; i++) {
 					    //UserAction in a TestStep
 						var action = testStepObject[i];
 						
 						//Opens "action" tag with 3 tabs before open tag
-						result += wrapIntoXMLTags("action", null, 0, 3, null);
+						result += wrapIntoXMLTags(xml_tags_constants['action'], null, 0, null);
 						
 							//Creates <id>ID</id> XML entry with 4 tabs before open tag
-							result += wrapIntoXMLTags("id", action.id, 1, 4, null);						
+							//result += wrapIntoXMLTags("id", action.id, 1, null);						
 							//Creates <command>COMMAND</command> XML entry with 4 tabs before open tag
-							result += wrapIntoXMLTags("command", action.command, 1, 4, null);
+							result += wrapIntoXMLTags(xml_tags_constants['command'], action.command, 1, null);
 							//Creates <target>TARGET</target> XML entry with 4 tabs before open tag
-							result += wrapIntoXMLTags("target", action.target, 1, 4, null);
+							result += wrapIntoXMLTags(xml_tags_constants['target'], action.target, 1, null);
 							//Creates <value>VALUE</value> XML entry with 4 tabs before open tag
-							result += wrapIntoXMLTags("value", action.value, 1, 4, null);
-							//Creates <metaDataName>META_DATA_NAME</metaDataName> XML entry with 4 tabs before open tag
-							result += wrapIntoXMLTags("metaDataName", action.metaDataName, 1, 4, null);
-							//Creates <comment>COMMENT</comment> XML entry with 4 tabs before open tag
-							result += wrapIntoXMLTags("comment", action.comment, 1, 4, null);
+							result += wrapIntoXMLTags(xml_tags_constants['value'], action.value, 1, null);
+							//Creates <nabmetadataname>META_DATA_NAME</nabmetadataname> XML entry with 4 tabs before open tag
+							result += wrapIntoXMLTags(xml_tags_constants['nabmetadataname'], action.nabmetadataname, 1, null);
+							//Creates <nabcomment>nabcomment</nabcomment> XML entry with 4 tabs before open tag
+							result += wrapIntoXMLTags(xml_tags_constants['nabcomment'], action.nabcomment, 1, null);
 						
 						//Close "action" tag with 3 tab before close tag
-						result += wrapIntoXMLTags("action", null, 3, 3, null);
+						result += wrapIntoXMLTags(xml_tags_constants['action'], null, 2, null);
 					};
 					
 					//Close testStep tag with 2 tab before close tag
-					result += wrapIntoXMLTags("teststep", null, 3, 2, null);
+					result += wrapIntoXMLTags(xml_tags_constants['nabgroup'], null, 2, null);
 				}
 			};
 			
 			//Close testCase tag
-			result += wrapIntoXMLTags("testcase", null, 3, 1, null);
+			result += wrapIntoXMLTags(xml_tags_constants['testcase'], null, 2, null);
 			
 		}
 	};
 	
 	//Root element close tag
-	result += wrapIntoXMLTags("testconfiguration", null, 2, 0, null);
+	result += wrapIntoXMLTags(xml_tags_constants['testconfiguration'], null, 2, null);
 	
 	return result;
 };
 
 
+
+///**
+// * Format an array of commands to the snippet of source.
+// * Used to copy the source into the clipboard.
+// * 
+// * @param name of testCase 
+// * @param array of commands.
+// * 
+// * @return JSON format for importing into NABUCCO TA
+// */
+//function formatCommands(name, commands, baseURL) {
+//  
+//  var testSuite = new Object;
+//  var testCase = new Object;  
+//  testCase.baseURL = baseURL;
+//  for (var i = 0; i < commands.length; i++) {
+//    var command = commands[i];
+//    if (command.type == command_constants['command']) {
+//	    if(testCase[command.nabgroup]) {
+//	    	var userActions = testCase[command.nabgroup];
+//	    	var userAction = createUserAction(command);
+//	    	userActions["" + i] = userAction;
+//	    } else {
+//		  	var actions = new Array();
+//		  	var userAction = createUserAction(command);
+//		  	actions.push(userAction);
+//	    	testCase[command.nabgroup] = actions;
+//	    }
+//    }else{
+//    	this.log.info("Format extension XML NABUCCO TA: formatCommands(name, commands) -> command.type != 'command'");
+//    }
+//  };
+//
+//  testSuite[name] = testCase; 
+//  
+//  return createXMLFromTestSuite(testSuite, "http://www.prodyna.com/nabucco_ta/selenium_ide");
+//};
 
 /**
  * Format an array of commands to the snippet of source.
@@ -318,19 +367,19 @@ function formatCommands(name, commands, baseURL) {
   
   var testSuite = new Object;
   var testCase = new Object;  
-  testCase.baseURL = baseURL;
+  testCase[xml_tags_constants['baseurl']] = baseURL;
   for (var i = 0; i < commands.length; i++) {
     var command = commands[i];
-    if (command.type == 'command') {
-	    if(testCase[command.testStepName]) {
-	    	var userActions = testCase[command.testStepName];
-	    	var userAction = createUserAction(i, command);
+    if (command.type == command_constants['command']) {
+	    if(testCase[command[command_constants['nabgroup']]]) {
+	    	var userActions = testCase[command[command_constants['nabgroup']]];
+	    	var userAction = createUserAction(command);
 	    	userActions["" + i] = userAction;
 	    } else {
 		  	var actions = new Array();
-		  	var userAction = createUserAction(i, command);
+		  	var userAction = createUserAction(command);
 		  	actions.push(userAction);
-	    	testCase[command.testStepName] = actions;
+	    	testCase[command[command_constants['nabgroup']]] = actions;
 	    }
     }else{
     	this.log.info("Format extension XML NABUCCO TA: formatCommands(name, commands) -> command.type != 'command'");
@@ -339,9 +388,8 @@ function formatCommands(name, commands, baseURL) {
 
   testSuite[name] = testCase; 
   
-  return createXMLFromTestSuite(testSuite, "http://www.prodyna.com/nabucco_ta/selenium_ide");
+  return createXMLFromTestSuite(testSuite, xml_tags_constants['namespace']);
 };
-
 
 //function formatSuite(testSuite, filename) {
 	
