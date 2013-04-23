@@ -332,7 +332,7 @@ function formatCommands(name, commands, baseURL) {
 	    if(testCase[command[command_constants['nabgroup']]]) {
 	    	var userActions = testCase[command[command_constants['nabgroup']]];
 	    	var userAction = createUserAction(command);
-	    	userActions["" + i] = userAction;
+	    	userActions.push(userAction);
 	    } else {
 		  	var actions = new Array();
 		  	var userAction = createUserAction(command);
