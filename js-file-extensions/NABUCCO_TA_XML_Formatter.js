@@ -42,9 +42,9 @@ function checkEmptyEntry(node){
 	var result;
 	
 	if(node.firstChild){
-		result = nabgroup = node.firstChild.nodeValue;
+		result = node.firstChild.nodeValue;
 	}else{
-		result = nabgroup = 'undefined';
+		result = '';
 	}
 	
 	return result;
