@@ -114,16 +114,28 @@ NabuccoExtView = (function() {
 	 */
 	NabuccoExtView.prototype.generateComment = function(cmd) {
 		try {
+//			var commandMap = {      
+//				//key = selenium-command
+//	            //matcher: $site, $value, $field
+//	            "open" : "Es wurde die Seite #target geöffnet",
+//	            "type" : "Der Wert #value wurde in das Feld #target eingetippt",
+//	            "typeKeys" : "Der Wert #value wurde in das Feld #target eingetippt",
+//	            "click" : "Es wurde das Feld #target angeklickt",
+//	            "clickAndWait" : "Es wurde das Feld #target angeklickt",
+//	            "select" : "Es wurde der Wert #value aus der Selectbox #target ausgewählt",
+//	        };
+			
 			var commandMap = {      
-				//key = selenium-command
-	            //matcher: $site, $value, $field
-	            "open" : "Es wurde die Seite #target geöffnet",
-	            "type" : "Der Wert #value wurde in das Feld #target eingetippt",
-	            "typeKeys" : "Der Wert #value wurde in das Feld #target eingetippt",
-	            "click" : "Es wurde das Feld #target angeklickt",
-	            "clickAndWait" : "Es wurde das Feld #target angeklickt",
-	            "select" : "Es wurde der Wert #value aus der Selectbox #target ausgewählt",
-	        };
+					//key = selenium-command
+					//matcher: $site, $value, $field
+					"open" : "The site #target was opened",
+					"type" : "The value #value was entered into #target field",
+					"typeKeys" : "The value #value was entered into #target field",
+					"click" : "The field #target was clicked",
+					"clickAndWait" : "The field #target was clicked",
+					"select" : "The value #value from #target was selected",
+			};
+			
 			var command = "";
 			if (cmd.command in commandMap) {
 				command = commandMap[cmd.command];
@@ -137,10 +149,7 @@ NabuccoExtView = (function() {
 
 	/**
 	 * This function should generate a grouping index used on
-	 * import. Maybe some logic can be used to determine when
-	 * the index should be incremented but for now it should
-	 * only take the last group-index and increment it by one.
-	 * At the moment the group index is empty per default.
+	 * import. The group index is empty per default.
 	 */
 	NabuccoExtView.prototype.generateGroupIndex = function(cmd) {
 		cmd.nabgroup = "";

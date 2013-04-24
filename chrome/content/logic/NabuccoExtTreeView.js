@@ -200,6 +200,17 @@ objectExtend(
 						return;
 					var command = this.getCommand(row);
 					command[col.id] = "" + value;
+					
+					// multiple commands can be set to the same group
+					if (col.id == "nabgroup") {
+						for (var i = row; i > 0; i--) {
+							if (this.getCommand(i-1)["nabgroup"] == value) {
+								for (var j = i; j < row; j++) {
+									this.getCommand(j)["nabgroup"] = "" + value;
+								}
+							}
+						}
+					}
 				} catch (error) {
 					alert("setCellText: " + error);
 					this.log.error("setCellText " + error);
