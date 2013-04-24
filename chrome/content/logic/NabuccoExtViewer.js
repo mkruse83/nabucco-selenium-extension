@@ -133,7 +133,7 @@ NabuccoExtView = (function() {
 			this.log.error("generateComment: " + error);
 			throw error;
 		}
-	}
+	};
 
 	/**
 	 * This function should generate a grouping index used on
@@ -146,7 +146,7 @@ NabuccoExtView = (function() {
 		cmd.nabgroup = "";
 		// TODO implementation
 		// TODO try catch
-	}
+	};
 
 	/**
 	 * This function updates the tree view. It should be called
@@ -158,20 +158,7 @@ NabuccoExtView = (function() {
 		} catch (error) {
 			alert('Error while refreshing tree: ' + error);
 		}
-	}
-
-//	NabuccoExtView.prototype.myAlert = function() {
-//		alert("test");
-//
-//		var message = "";
-//		for ( var i = 0; i < this.editor.app.testCase.commands.length; i++) {
-//			var cmd = this.editor.app.testCase.commands[i];
-//			message = message + "cmd: " + cmd.command + " target: "
-//					+ cmd.target + " value: " + cmd.value + "\n";
-//		}
-//		alert(message);
-//
-//	};
+	};
 
 	return NabuccoExtView;
 })();

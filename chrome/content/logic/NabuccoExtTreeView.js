@@ -58,6 +58,7 @@ objectExtend(
 				}
 			},
 
+
 			getCommand : function(row) {
 				try {
 					if (row < this.editor.app.testCase.commands.length) {
@@ -174,7 +175,6 @@ objectExtend(
 
 			/**
 			 * This function tells the controller which columns should be editable
-			 * TODO add group-editing.
 			 */
 			// isEditable(long row, nsITreeColumn col)
 			isEditable : function(row, col) {
@@ -192,7 +192,6 @@ objectExtend(
 			/**
 			 * This function is used to set the value which the user has entered
 			 * previously.
-			 * TODO add grouping
 			 */
 			// setCellText(long row, nsITreeColumn col, AString value)
 			setCellText : function(row, col, value) {

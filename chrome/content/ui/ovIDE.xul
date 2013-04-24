@@ -15,6 +15,14 @@
 <overlay id="nabucco_ext_viewer_overlay"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	
-	<script type="application/x-javascript" src="chrome://nabuccoextviewer/content/logic/NabuccoExtTable.js"/>
 	
+	<script type="application/x-javascript">
+	    mytabbox = document.getElementById("tabbox");
+        mytabbox.lastChild.lastChild.id = "sourcePanel";
+	</script>
+	
+	<tab id="sourceTab" removeelement="true" />
+	<tabpanel id="sourcePanel" removeelement="true" />
+	
+	<script type="application/x-javascript" src="chrome://nabuccoextviewer/content/logic/NabuccoExtTable.js"/>
 </overlay>
