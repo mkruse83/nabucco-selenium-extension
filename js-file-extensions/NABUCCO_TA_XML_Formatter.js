@@ -18,7 +18,9 @@ var command_constants = {
  * It's the central position for changing attribute names.
  */
 var xml_tags_constants = {
-	'namespace':'http://www.prodyna.com',	
+	'namespace':'http://www.prodyna.com',
+	'namespace_for_schema_instance':'http://www.w3.org/2001/XMLSchema-instance',
+	'schemaLocation':'http://www.prodyna.com',
 	'testconfiguration':'testconfiguration',
 	'testcasename':'name',
 	'testcase':'testcase',
@@ -31,6 +33,7 @@ var xml_tags_constants = {
 	'nabgroup':'nabgroup',
 	'nabgroupname':'name',
 	'nabmetadataname':'nabmetadataname'		
+		
 };
 
 /**
@@ -210,7 +213,8 @@ function wrapIntoXMLTags(tagName, value, flag, namespace){
 			result += "</" + tagName + ">";
 			break;		
 		case 10:
-			result += "<" + tagName + " xmlns = \"" + namespace +"\">";
+			result += "<" + tagName + " xmlns=\"" + namespace +"\" xmlns:xsi=\"" + xml_tags_constants['namespace_for_schema_instance'] + "\"";
+			result += " xsi:schemaLocation=\"" + xml_tags_constants['schemaLocation'] +"\">";
 			break;
 		default: break;	
 	}
