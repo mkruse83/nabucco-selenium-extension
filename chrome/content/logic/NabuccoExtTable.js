@@ -17,6 +17,8 @@ mytree.setAttribute("id", "nbcCommands");
 mytree.setAttribute("flex", "1");
 mytree.setAttribute("enableColumnDrag", "false");
 mytree.setAttribute("hidecolumnpicker", "true");
+mytree.setAttribute("context", "nbcContextMenu");
+
 // make editable so that comment and group can be
 // changed by the user.
 mytree.setAttribute("editable", "true");

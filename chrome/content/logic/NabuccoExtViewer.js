@@ -24,87 +24,91 @@
 NabuccoExtView = (function() {
 
 	function NabuccoExtView(editor) {
-		this.editor = editor;
-		this.tree = document.getElementById("nbcCommands");
-		this.view = new NabuccoExtTreeView(this, this.tree);
-		var self = this; // needed to have access to "this" within the Object
-							// that is added in "addObserver" below
-
-		// adding an observer to the editor. the object implements some methods
-		// that are called from the editor when e.g. the testcase has changed.
-		// enable alerts to learn when these events are fired.
-		editor.app.addObserver({
-			baseURLChanged : function() {
-				// alert("baseURL");
-			},
-
-			optionsChanged : function() {
-				// alert("optionsChanged");
-
-			},
-
-			testSuiteChanged : function(testSuite) {
-				// alert("testSuiteChanged");
-				testSuite.addObserver(this._testSuiteObserver);
-			},
-
-			testSuiteUnloaded : function(testSuite) {
-				// alert("testSuiteUnloaded");
-				testSuite.removeObserver(this._testSuiteObserver);
-			},
-
-			testCaseChanged : function(testCase) {
-				// alert("testCaseChanged");
-				self.updateView();
-				testCase.addObserver(this._testCaseObserver);
-			},
-
-			testCaseUnloaded : function(testCase) {
-				// alert("testCaseUnloaded");
-				testCase.removeObserver(this._testCaseObserver);
-			},
-
-			/**
-			 * called when the format is changing. It synchronizes the testcase
-			 * before changing the view with a converted testcase in the new
-			 * format
-			 */
-			currentFormatChanging : function() {
-				// alert("currentFormatChanging");
-			},
-
-			currentFormatChanged : function(format) {
-				// alert("currentFormatChanged");
-			},
-
-			/**
-			 * called when the format can't be changed. It advises the user of
-			 * the undoable action
-			 */
-			currentFormatUnChanged : function(format) {
-				// alert("currentFormatUnChanged");
-			},
-
-			clipboardFormatChanged : function(format) {
-			},
-
-			// an observer that is added by the editor itself. 
-			_testCaseObserver : {
-				modifiedStateUpdated : function() {
-					// alert("_testCaseObserver");
+		try {
+			this.editor = editor;
+			this.tree = document.getElementById("nbcCommands");
+			this.view = new NabuccoExtTreeView(this, this.tree);
+			var self = this; // needed to have access to "this" within the Object
+								// that is added in "addObserver" below
+	
+			// adding an observer to the editor. the object implements some methods
+			// that are called from the editor when e.g. the testcase has changed.
+			// enable alerts to learn when these events are fired.
+			editor.app.addObserver({
+				baseURLChanged : function() {
+					// alert("baseURL");
+				},
+	
+				optionsChanged : function() {
+					// alert("optionsChanged");
+	
+				},
+	
+				testSuiteChanged : function(testSuite) {
+					// alert("testSuiteChanged");
+					testSuite.addObserver(this._testSuiteObserver);
+				},
+	
+				testSuiteUnloaded : function(testSuite) {
+					// alert("testSuiteUnloaded");
+					testSuite.removeObserver(this._testSuiteObserver);
+				},
+	
+				testCaseChanged : function(testCase) {
+					// alert("testCaseChanged");
 					self.updateView();
-				}
-			},
-
-			_testSuiteObserver : {
-				testCaseAdded : function() {
-					// alert("_testSuiteObserver");
-					self.updateView();
-				}
+					testCase.addObserver(this._testCaseObserver);
+				},
+	
+				testCaseUnloaded : function(testCase) {
+					// alert("testCaseUnloaded");
+					testCase.removeObserver(this._testCaseObserver);
+				},
+	
+				/**
+				 * called when the format is changing. It synchronizes the testcase
+				 * before changing the view with a converted testcase in the new
+				 * format
+				 */
+				currentFormatChanging : function() {
+					// alert("currentFormatChanging");
+				},
+	
+				currentFormatChanged : function(format) {
+					// alert("currentFormatChanged");
+				},
+	
+				/**
+				 * called when the format can't be changed. It advises the user of
+				 * the undoable action
+				 */
+				currentFormatUnChanged : function(format) {
+					// alert("currentFormatUnChanged");
+				},
+	
+				clipboardFormatChanged : function(format) {
+				},
+	
+				// an observer that is added by the editor itself. 
+				_testCaseObserver : {
+					modifiedStateUpdated : function() {
+						// alert("_testCaseObserver");
+						self.updateView();
+					}
+				},
+	
+				_testSuiteObserver : {
+					testCaseAdded : function() {
+						// alert("_testSuiteObserver");
+						self.updateView();
+					}
+					
 				
-			
-			}
-		});
+				}
+			});
+		} catch (error) {
+			alert('Error initializing viewer: ' + error);
+		}
 	}
 
 	/**
@@ -133,7 +137,7 @@ NabuccoExtView = (function() {
 					"typeKeys" : "The value #value was entered into #target field",
 					"click" : "The field #target was clicked",
 					"clickAndWait" : "The field #target was clicked",
-					"select" : "The value #value from #target was selected",
+					"select" : "The value #value from #target was selected"
 			};
 			
 			var command = "";
@@ -166,6 +170,32 @@ NabuccoExtView = (function() {
 			this.view.refresh();
 		} catch (error) {
 			alert('Error while refreshing tree: ' + error);
+		}
+	};
+	
+	/**
+	 * This function enters the group from the first selected line and
+	 * copies it to all selected lines. This is part of the context menu.
+	 */
+	NabuccoExtView.prototype.groupByFirst = function() {
+		try {
+			if (this.view.selection.getRangeCount() > 0) {
+				var start = new Object();
+				var end = new Object();
+				this.view.selection.getRangeAt(0, start, end);
+				var group = this.view.getCommand(start.value).nabgroup;
+				for (var rangeIndex = 0; rangeIndex < this.view.selection.getRangeCount(); rangeIndex++) {
+					this.view.selection.getRangeAt(rangeIndex, start, end);
+					for (var index = start.value; index <= end.value; index++) {
+						this.view.getCommand(index).nabgroup = group;
+					}
+				}
+			}
+			
+		} catch (error) {
+			alert("Could not groupByFirst " + error);
+			this.log.error("Could not groupByFirst " + error);
+			throw error;
 		}
 	};
 

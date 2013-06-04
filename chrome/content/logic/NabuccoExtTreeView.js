@@ -1,11 +1,11 @@
 /**
- * This object is the view for the nabucco extension. It is an implementation
- * of the nsITreeView-interface. 
- * See https://developer.mozilla.org/en-US/docs/XPCOM_Interface_Reference/nsITreeView
- * It also extends the XulUtils.TreeViewHelper-Object defined in xul-utils.js from
- * the selenium-ide source code.
- * Here all GUI operations should be handled like selecting a row etc.pp.
- * NOTE: Use try-catch in every function because errors are not put on screen otherwise.
+ * This object is the view for the nabucco extension. It is an implementation of
+ * the nsITreeView-interface. See
+ * https://developer.mozilla.org/en-US/docs/XPCOM_Interface_Reference/nsITreeView
+ * It also extends the XulUtils.TreeViewHelper-Object defined in xul-utils.js
+ * from the selenium-ide source code. Here all GUI operations should be handled
+ * like selecting a row etc.pp. NOTE: Use try-catch in every function because
+ * errors are not put on screen otherwise.
  */
 var NabuccoExtTreeView = classCreate();
 objectExtend(NabuccoExtTreeView.prototype, XulUtils.TreeViewHelper.prototype);
@@ -20,6 +20,57 @@ objectExtend(
 					this.viewer = viewer;
 					this.editor = viewer.editor;
 					this.rowCount = 0;
+					var self = this;
+
+					var controller = {
+						supportsCommand : function(cmd) {
+							try {
+								switch (cmd) {
+									case "cmd_nabucco_group_first":
+									    return true;
+									default:
+										return false;
+								}
+							} catch (error) {
+								alert("Could not doCommand for cmd " + cmd + " error: " + error);
+								this.log.error("Could not doCommand for cmd " + cmd + " error: " + error);
+								throw error;
+							}
+						},
+						isCommandEnabled : function(cmd) {
+							try {
+								switch (cmd) {
+									case "cmd_nabucco_group_first":
+										return self.selection.getRangeCount() > 0;
+									default:
+										return false;
+								}
+							} catch (error) {
+								alert("Could not doCommand for cmd " + cmd + " error: " + error);
+								this.log.error("Could not doCommand for cmd " + cmd + " error: " + error);
+								throw error;
+							}
+						},
+						doCommand : function(cmd) {
+							try {
+								switch (cmd) {
+									case "cmd_nabucco_group_first":
+									    self.viewer.groupByFirst();
+										break;
+									default:
+										break;
+								}
+							} catch (error) {
+								alert("Could not doCommand for cmd " + cmd + " error: " + error);
+								this.log.error("Could not doCommand for cmd " + cmd + " error: " + error);
+								throw error;
+							}
+						},
+						onEvent : function(evt) {
+							alert("onEvent");
+						}
+					};
+					self.tree.controllers.appendController(controller);
 				} catch (error) {
 					alert("initialize: " + error);
 					this.log.error("Could not initialize treeview " + error);
@@ -28,8 +79,9 @@ objectExtend(
 			},
 
 			/**
-			 * Refreshes the tree by calling rowcountchanged. The javascript-interpreter
-			 * then calls getCellText etc.pp. from the nsITreeView interface.
+			 * Refreshes the tree by calling rowcountchanged. The
+			 * javascript-interpreter then calls getCellText etc.pp. from the
+			 * nsITreeView interface.
 			 */
 			refresh : function() {
 				try {
@@ -57,7 +109,6 @@ objectExtend(
 					throw error;
 				}
 			},
-
 
 			getCommand : function(row) {
 				try {
@@ -174,7 +225,8 @@ objectExtend(
 			},
 
 			/**
-			 * This function tells the controller which columns should be editable
+			 * This function tells the controller which columns should be
+			 * editable
 			 */
 			// isEditable(long row, nsITreeColumn col)
 			isEditable : function(row, col) {
@@ -196,16 +248,16 @@ objectExtend(
 			// setCellText(long row, nsITreeColumn col, AString value)
 			setCellText : function(row, col, value) {
 				try {
-					if (col.id  != "nabcomment" && col.id != "nabgroup" && col.id != "nabmetadataname")
+					if (col.id != "nabcomment" && col.id != "nabgroup" && col.id != "nabmetadataname")
 						return;
 					var command = this.getCommand(row);
 					command[col.id] = "" + value;
-					
+
 					// multiple commands can be set to the same group
 					if (col.id == "nabgroup") {
-						for (var i = row; i > 0; i--) {
-							if (this.getCommand(i-1)["nabgroup"] == value) {
-								for (var j = i; j < row; j++) {
+						for ( var i = row; i > 0; i--) {
+							if (this.getCommand(i - 1)["nabgroup"] == value) {
+								for ( var j = i; j < row; j++) {
 									this.getCommand(j)["nabgroup"] = "" + value;
 								}
 							}
